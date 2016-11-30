@@ -1,0 +1,18 @@
+? open project on github
+
+; handling End Session makes sense under XP, but is not worth
+	; and must be done inside the window message handler
+
+; unblocking Alt+Key when toggle=Alt under 10 (8?) seems hard
+
+? send mail to Eugene
+
+: release
+
+--
+
+? place a tray on all desktops w/ the WKB menu
+	? replace the startup directory with a start entry
+
+? use custom browse folder to mark the selected item properly
+	; or at least display the original directory

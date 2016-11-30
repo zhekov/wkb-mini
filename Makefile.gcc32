@@ -1,0 +1,20 @@
+all: wkb-mini.exe
+
+CFLAGS = -Wall -Wextra -O2 -s -mwindows
+HKFLAGS = -nostdlib -nostartfiles -shared
+GCC32 = i686-w64-mingw32-gcc
+WINDRES = windres
+
+wkb-hook.dll: wkb-hook.c wkb-hook.h wkb-hook.def Makefile.gcc32
+	$(GCC32) $(CFLAGS) $(HKFLAGS) -o $@ wkb-hook.c wkb-hook.def -luser32
+
+version-mini.o: version-mini.rc Makefile.gcc32
+	$(WINDRES) -F pe-i386 -o $@ version-mini.rc
+
+wkb-mini.exe: wkb-mini.c wkb-proc-inc.c wkb-hook.h version-mini.o wkb-mini.def wkb-hook.dll Makefile.gcc32
+	$(GCC32) $(CFLAGS) -o $@ wkb-mini.c version-mini.o wkb-mini.def wkb-hook.dll
+
+clean:
+	@"./make-clean.cmd"
+
+.PHONY: all clean

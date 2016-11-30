@@ -1,0 +1,3 @@
+#define WKB_LAYOUT_MESSAGE "wkbLayoutMessage83445DF9"
+WKB_MINI_DLL LRESULT CALLBACK windowProc(INT nCode, WPARAM wParam, LPARAM lParam);
+WKB_MINI_DLL LRESULT CALLBACK keyboardProc(INT nCode, WPARAM wParam, LPARAM lParam);
