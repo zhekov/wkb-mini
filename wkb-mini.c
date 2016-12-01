@@ -511,11 +511,11 @@ static void readSettings(void)
 	}
 }
 
-static void findWkbWindows(HWND *window)
+static void findWkbWindows(HWND *windows)
 {
-	window[0] = FindWindow(WKB_CLASS_NAME, WKB_WINDOW_NAME);
+	windows[0] = FindWindow(WKB_CLASS_NAME, WKB_WINDOW_NAME);
 #ifdef _WIN64
-	window[1] = FindWindow(WOW_CLASS_NAME, WOW_WINDOW_NAME);
+	windows[1] = FindWindow(WOW_CLASS_NAME, WOW_WINDOW_NAME);
 #endif
 }
 
@@ -526,17 +526,17 @@ static void findWkbWindows(HWND *window)
 static BOOL CALLBACK enumDesktop(LPSTR desktopName, LPARAM lParam)
 {
 	HDESK desktop = OpenDesktop(desktopName, 0, FALSE, 0);
-	HWND *window = (HWND *) lParam;
+	HWND *windows = (HWND *) lParam;
 
 	if (desktop)
 	{
 		if (SetThreadDesktop(desktop))
-			findWkbWindows(window);
+			findWkbWindows(windows);
 
 		CloseHandle(desktop);
 	}
 
-	return window[0] == NULL && window[1] == NULL;
+	return windows[0] == NULL && windows[1] == NULL;
 }
 
 static BOOL unloadWkbs(void)
@@ -548,27 +548,27 @@ static BOOL unloadWkbs(void)
 	checkFunc("GetThreadDesktop", desktop != NULL);
 	do
 	{
-		HWND window[2] = { NULL, NULL };
+		HWND windows[2] = { NULL, NULL };
 
-		EnumDesktops(GetProcessWindowStation(), enumDesktop, (LPARAM) &window);
+		EnumDesktops(GetProcessWindowStation(), enumDesktop, (LPARAM) windows);
 
-		if (window[0] == NULL && window[1] == NULL)
-			findWkbWindows(window);
+		if (windows[0] == NULL && windows[1] == NULL)
+			findWkbWindows(windows);
 
-		if (window[0] != NULL || window[1] != NULL)
+		if (windows[0] != NULL || windows[1] != NULL)
 		{
 			if (++found % 5 == 0)
 			{
 				fatal("Failed to unload %s from memory.\n"
 					"You may need administrator rights.",
-					window[0] ? "wkb-mini" : "wkb-mwow");
+					windows[0] ? "wkb-mini" : "wkb-mwow");
 			}
 
-			if (window[0])
-				sendAsyncMessage(window[0], WM_CLOSE, 0, 0);
+			if (windows[0])
+				sendAsyncMessage(windows[0], WM_CLOSE, 0, 0);
 
-			if (window[1])
-				sendAsyncMessage(window[1], WM_CLOSE, 0, 0);
+			if (windows[1])
+				sendAsyncMessage(windows[1], WM_CLOSE, 0, 0);
 
 			Sleep(50);
 			clean = 0;  /* found something, restart the search */
