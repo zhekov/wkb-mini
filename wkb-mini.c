@@ -526,16 +526,17 @@ static void findWkbWindows(HWND *window)
 static BOOL CALLBACK enumDesktop(LPSTR desktopName, LPARAM lParam)
 {
 	HDESK desktop = OpenDesktop(desktopName, 0, FALSE, 0);
+	HWND *window = (HWND *) lParam;
 
 	if (desktop)
 	{
 		if (SetThreadDesktop(desktop))
-			findWkbWindows((HWND *) lParam);
+			findWkbWindows(window);
 
 		CloseHandle(desktop);
 	}
 
-	return TRUE;
+	return window[0] == NULL && window[1] == NULL;
 }
 
 static BOOL unloadWkbs(void)
@@ -549,10 +550,12 @@ static BOOL unloadWkbs(void)
 	{
 		HWND window[2] = { NULL, NULL };
 
-		if (!EnumDesktops(GetProcessWindowStation(), enumDesktop, (LPARAM) &window))
+		EnumDesktops(GetProcessWindowStation(), enumDesktop, (LPARAM) &window);
+
+		if (window[0] == NULL && window[1] == NULL)
 			findWkbWindows(window);
 
-		if (window[0] || window[1])
+		if (window[0] != NULL || window[1] != NULL)
 		{
 			if (++found % 5 == 0)
 			{

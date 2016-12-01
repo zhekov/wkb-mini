@@ -85,6 +85,7 @@ be conflicting. Disable one of them.
 0.92: Removed the experimental service/accesibility code.
 0.94: Restored the Scroll Lock key functionality, except for the state.
 1.06: Rewritten for compatibility with 64-bit systems, common dialogs etc.
+1.07: Fixed Start Menu -> Start, Stop, Settings from a non-default desktop.
 
 
 9. Legal information.
