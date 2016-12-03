@@ -14,11 +14,11 @@ BEGIN
     BEGIN
       VALUE "FileDescription", "WKB Layout Executable\0"
       VALUE "InternalName", "wkb-mini\0"
-      VALUE "FileVersion", "1.06\0"
+      VALUE "FileVersion", "1.07\0"
       VALUE "LegalCopyright", "Copyright (C) 2016 Dimitar Toshkov Zhekov\0"
       VALUE "OriginalFilename", "wkb-mini.exe\0"
       VALUE "ProductName", "WKB Layout\0"
-      VALUE "ProductVersion", "1.06\0"
+      VALUE "ProductVersion", "1.07\0"
     END
   END
   BLOCK "VarFileInfo"

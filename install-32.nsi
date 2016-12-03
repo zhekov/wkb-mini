@@ -1,5 +1,5 @@
 Name "WKB Layout"
-OutFile "wkb-install-1.06-x86.exe"
+OutFile "wkb-install-1.07-x86.exe"
 RequestExecutionLevel admin
 CRCCheck force
 XPStyle on
