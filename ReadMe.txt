@@ -7,7 +7,7 @@ WKB Layout Switcher (wkb-mini) README file
 As a keyboard switcher, WKB needs access to the keyboard, and to the input
 queues of all threads. So, an antivirus may mistake it for a key logger or
 another malware. If you are suspicious, get the source code and compile it
-yourself (see p.4 below), or ask somebody to do so. "It's the only way to
+yourself (see p.5 below), or ask somebody to do so. "It's the only way to
 be sure".
 
 
