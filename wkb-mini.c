@@ -580,7 +580,7 @@ static BOOL unloadWkbs(void)
 		}
 	} while (clean < 5);
 
-	checkFunc("SetThreadDesktop", SetThreadDesktop(desktop));
+	SetThreadDesktop(desktop);
 	CloseHandle(desktop);
 	return found > 0;
 }

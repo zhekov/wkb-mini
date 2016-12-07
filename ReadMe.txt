@@ -86,6 +86,7 @@ be conflicting. Disable one of them.
 0.94: Restored the Scroll Lock key functionality, except for the state.
 1.06: Rewritten for compatibility with 64-bit systems, common dialogs etc.
 1.07: Fixed Start Menu -> Start, Stop, Settings from a non-default desktop.
+1.08: Ignore W10 error 170 on (un)install or when started as administrator.
 
 
 9. Legal information.
