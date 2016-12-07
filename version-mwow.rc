@@ -1,8 +1,8 @@
 #include <winver.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1, 0, 2, 0
-PRODUCTVERSION 1, 0, 6, 0
+FILEVERSION 1, 0, 8, 0
+PRODUCTVERSION 1, 0, 8, 0
 FILEOS VOS_NT_WINDOWS32
 FILETYPE VFT_APP
 BEGIN
@@ -12,11 +12,11 @@ BEGIN
     BEGIN
       VALUE "FileDescription", "WKB Layout 32-bit Helper\0"
       VALUE "InternalName", "wkb-mwow\0"
-      VALUE "FileVersion", "1.07\0"
+      VALUE "FileVersion", "1.08\0"
       VALUE "LegalCopyright", "Copyright (C) 2016 Dimitar Toshkov Zhekov\0"
       VALUE "OriginalFilename", "wkb-mwow.exe\0"
       VALUE "ProductName", "WKB Layout\0"
-      VALUE "ProductVersion", "1.07\0"
+      VALUE "ProductVersion", "1.08\0"
     END
   END
   BLOCK "VarFileInfo"

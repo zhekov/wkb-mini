@@ -75,7 +75,7 @@ Function wkbInstallPage
 		the hope that it will be useful, but WITHOUT ANY WARRANTY; \
 		without even the implied warranty of MERCHANTABILITY or \
 		FITNESS FOR A PARTICULAR PURPOSE."
-	${NSD_CreateLabel} 2% 117u 96% 12u "WKB Layout version 1.07, \
+	${NSD_CreateLabel} 2% 117u 96% 12u "WKB Layout version 1.08, \
 		Copyright (C) 2016 Dimitar Toshkov Zhekov."
 
 	nsDialogs::Show
