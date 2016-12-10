@@ -99,7 +99,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.
 
-WKB Layout version 1.07, Copyright (C) 2016 Dimitar Toshkov Zhekov.
+WKB Layout version 1.08, Copyright (C) 2016 Dimitar Toshkov Zhekov.
 Report bugs to <dimitar.zhekov@gmail.com>
 
 The gucharmap icon is part of the GNOME icon theme, designed by the GNOME
