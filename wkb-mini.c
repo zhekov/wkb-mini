@@ -126,7 +126,7 @@ static BOOL shouldRetainRelease(DWORD key)
 static BOOL isLockLogout(BYTE key)
 {
 	return (key == 'L' && eitherPressed(VK_LWIN, VK_RWIN) && notModifiedExcept(VK_LWIN, VK_RWIN)) ||
-		/* Ctrl-Alt-Del with other shifts is unlikely, the check is 
+		/* Ctrl-Alt-Del with other shifts is unlikely, the check is
 		   too long, and there is no harm if Scroll blinks a bit. */
 		((key == VK_DELETE || key == VK_DECIMAL) && eitherPressed(VK_LMENU, VK_RMENU) &&
 		eitherPressed(VK_LCONTROL, VK_RCONTROL));
@@ -388,8 +388,7 @@ static unsigned translateKey(const char *str)
 		const char *name;
 	} keyNames[] =
 	{
-		{ VK_APPS, "Apps" },
-		{ VK_APPS, "Props" },  /* for compatibility */
+		{ VK_CAPITAL, "Caps" },
 		{ VK_SCROLL, "Scroll" },
 		{ VK_RCONTROL, "RCtrl" },
 		{ VK_RMENU, "RAlt" },
@@ -399,6 +398,8 @@ static unsigned translateKey(const char *str)
 		{ VK_LMENU, "LAlt" },
 		{ VK_LWIN, "LWin" },
 		{ VK_LSHIFT, "LShift" },
+		{ VK_APPS, "Apps" },
+		{ VK_APPS, "Props" },  /* for compatibility */
 		{ VK_PAUSE, "Pause" },
 		{ 0, NULL }
 	};

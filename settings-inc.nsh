@@ -17,26 +17,27 @@ Function createKeyPanelFunc
 	Pop $R0
 
 	nsArray::Clear keyPanel
-	${createKeyPanelButton} $R0 10u 26% 12u "Applications"
+	${createKeyPanelButton} $R0 10u 26% 11u "Caps Lock"
+	${createKeyPanelButton} $R1 10u 20% 11u "Scroll Lock"
+	${createKeyPanelButton} $R0 21u 26% 11u "Right Control"
+	${createKeyPanelButton} $R1 21u 20% 11u "Right Alt"
+	${createKeyPanelButton} $R0 32u 26% 11u "Right Windows"
+	${createKeyPanelButton} $R1 32u 20% 11u "Right Shift"
+	${createKeyPanelButton} $R0 43u 26% 11u "Left Control"
+	${createKeyPanelButton} $R1 43u 20% 11u "Left Alt"
+	${createKeyPanelButton} $R0 54u 26% 11u "Left Windows"
+	${createKeyPanelButton} $R1 54u 20% 11u "Left Shift"
+	${createKeyPanelButton} $R0 65u 26% 11u "Applications"
 	${NSD_AddStyle} $radioButton ${WS_GROUP}
 	ToolTips::Classic $radioButton 'Also popular as "Menu" and "Context Menu"'
-	${createKeyPanelButton} $R1 10u 20% 12u "Scroll Lock"
-	${createKeyPanelButton} $R0 22u 26% 12u "Right Control"
-	${createKeyPanelButton} $R1 22u 20% 12u "Right Alt"
-	${createKeyPanelButton} $R0 34u 26% 12u "Right Windows"
-	${createKeyPanelButton} $R1 34u 20% 12u "Right Shift"
-	${createKeyPanelButton} $R0 46u 26% 12u "Left Control"
-	${createKeyPanelButton} $R1 46u 20% 12u "Left Alt"
-	${createKeyPanelButton} $R0 58u 26% 12u "Left Windows"
-	${createKeyPanelButton} $R1 58u 20% 12u "Left Shift"
-	${createKeyPanelButton} $R0 70u 26% 12u "Pause/Break"
-	${createKeyPanelButton} $R1 70u 20% 12u "None"
+	${createKeyPanelButton} $R1 65u 20% 11u "Pause/Break"
+	${createKeyPanelButton} $R0 76u 26% 11u "None"
 
 	ReadRegStr $0 HKCU "Software\WkbLayout" "$R2"
 	${If} $0 == ""
 		StrCpy $R3 0
 	${Else}
-        	StrCpy $R3 ""
+		StrCpy $R3 ""
 
 		${ForEachIn} keyNameList $1 $2
 			${If} $0 == $2
@@ -66,10 +67,10 @@ FunctionEnd
 !define createKeyPanel `!insertmacro createKeyPanelMacro`
 
 Function wkbSettingsPage
-	nsArray::Split keyNameList "Apps|Scroll|RCtrl|RAlt|RWin|RShift|LCtrl|LAlt|LWin|LShift|Pause|00" "|"
+	nsArray::Split keyNameList "Caps|Scroll|RCtrl|RAlt|RWin|RShift|LCtrl|LAlt|LWin|LShift|Apps|Pause|00" "|"
 	nsDialogs::Create 1018
 
-	${NSD_CreateGroupBox} 0 0 49% 85u "Change layout key"
+	${NSD_CreateGroupBox} 0 0 49% 90u "Change layout key"
 	${createKeyPanel} 2% 28% "ToggleKey"
 	StrCpy $R0 "1"
 	${If} ${AtLeastWinVista}  # or 7even?
@@ -79,7 +80,7 @@ Function wkbSettingsPage
 	${IfThen} $0 == "1" ${|} ${NSD_SetFocus} $radioButton ${|}
 	${nsArray_Copy} keyPanel togglePanel
 
-	${NSD_CreateGroupBox} 51% 0 49% 85u "Shift-change key"
+	${NSD_CreateGroupBox} 51% 0 49% 90u "Shift-change key"
 	${createKeyPanel} 53% 79% "ShiftKey"
 	${nsArray_Copy} keyPanel shiftPanel
 	${ForEach} $R0 4 8 + 4
@@ -88,10 +89,10 @@ Function wkbSettingsPage
 		ToolTips::Classic $radioButton "Not recommended as a shift-change key"
 	${Next}
 
-	${NSD_CreateLabel} 0% 89u 99% 8u "Please select key(s) that will not be used for any regular functions"
-	${NSD_CreateHLine} 0 101u 100% 1u
+	${NSD_CreateLabel} 0 93u 99% 8u "Please select key(s) that will not be used for any regular functions"
+	${NSD_CreateHLine} 0 104u 100% 1u
 
-	${NSD_CreateCheckBox} 0 107u 99% 20u "Use the Scroll Lock led as a keyboard layout indicator$\n\
+	${NSD_CreateCheckBox} 0 107u 99% 23u "Use the Scroll Lock led as a keyboard layout indicator$\n\
 		Uncheck this if you use programs that rely on the Scroll Lock state (rare)"
 	Pop $ledLight
 	${NSD_AddStyle} $ledLight ${WS_GROUP}
