@@ -1,8 +1,26 @@
+/*
+  Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the Free
+  Software Foundation; either version 2 of the License, or (at your option)
+  any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+  for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #include <winver.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1, 0, 8, 0
-PRODUCTVERSION 1, 0, 8, 0
+FILEVERSION 1, 11, 0, 0
+PRODUCTVERSION 1, 11, 0, 0
 FILEOS VOS_NT_WINDOWS32
 FILETYPE VFT_APP
 BEGIN
@@ -12,11 +30,11 @@ BEGIN
     BEGIN
       VALUE "FileDescription", "WKB Layout 32-bit Helper\0"
       VALUE "InternalName", "wkb-mwow\0"
-      VALUE "FileVersion", "1.08\0"
-      VALUE "LegalCopyright", "Copyright (C) 2016 Dimitar Toshkov Zhekov\0"
+      VALUE "FileVersion", "1.11\0"
+      VALUE "LegalCopyright", "Copyright (C) 2016-2020 Dimitar Toshkov Zhekov\0"
       VALUE "OriginalFilename", "wkb-mwow.exe\0"
       VALUE "ProductName", "WKB Layout\0"
-      VALUE "ProductVersion", "1.08\0"
+      VALUE "ProductVersion", "1.11\0"
     END
   END
   BLOCK "VarFileInfo"

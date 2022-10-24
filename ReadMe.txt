@@ -87,20 +87,29 @@ be conflicting. Disable one of them.
 1.06: Rewritten for compatibility with 64-bit systems, common dialogs etc.
 1.07: Fixed Start Menu -> Start, Stop, Settings from a non-default desktop.
 1.08: Ignore W10 error 170 on (un)install or when started as administrator.
+1.09: Option to unload the wrong lock/unlock, Ctrl-Alt-Del etc. layouts.
+1.10: Added Caps Lock and Print Screen to the list of toggle/shift keys.
+1.11: Simpler unload, display unload error message on the starting desktop.
 
 
 9. Legal information.
 
-You can redistribute and/or modify this program under the terms of the GNU
-General Public License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.
-
-WKB Layout version 1.08, Copyright (C) 2016 Dimitar Toshkov Zhekov.
+WKB Layout version 1.11, Copyright (C) 2016-2020 Dimitar Toshkov Zhekov.
 Report bugs to <dimitar.zhekov@gmail.com>
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc., 51
+Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 The gucharmap icon is part of the GNOME icon theme, designed by the GNOME
 icon artists, and licensed under the Creative Commons Attribution-Share

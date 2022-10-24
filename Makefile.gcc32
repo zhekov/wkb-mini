@@ -1,20 +1,46 @@
-all: wkb-mini.exe
+#
+# Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
 
-CFLAGS = -Wall -Wextra -O2 -s -mwindows
-HKFLAGS = -nostdlib -nostartfiles -shared
-GCC32 = i686-w64-mingw32-gcc
-WINDRES = windres
+all: wkb-mini.exe custom-ui.dll
 
-wkb-hook.dll: wkb-hook.c wkb-hook.h wkb-hook.def Makefile.gcc32
-	$(GCC32) $(CFLAGS) $(HKFLAGS) -o $@ wkb-hook.c wkb-hook.def -luser32
+CC32 = i686-w64-mingw32-gcc
+CFLAGS = -Wall -Wextra -O2
+LDFLAGS = -s -mwindows
+DLLFLAGS = -shared -nostdlib -nostartfiles
+RC32 = windres -F pe-i386
+RM = rm -f
+
+wkb-hook.dll: wkb-hook.c wkb-hook.h Makefile.gcc32
+	$(CC32) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ wkb-hook.c -luser32
 
 version-mini.o: version-mini.rc Makefile.gcc32
-	$(WINDRES) -F pe-i386 -o $@ version-mini.rc
+	$(RC32) -o $@ version-mini.rc
 
-wkb-mini.exe: wkb-mini.c wkb-proc-inc.c wkb-hook.h version-mini.o wkb-mini.def wkb-hook.dll Makefile.gcc32
-	$(GCC32) $(CFLAGS) -o $@ wkb-mini.c version-mini.o wkb-mini.def wkb-hook.dll
+wkb-mini.exe: wkb-mini.c wkb-proc-inc.c wkb-hook.h version-mini.o wkb-hook.dll Makefile.gcc32
+	$(CC32) $(CFLAGS) $(LDFLAGS) -o $@ wkb-mini.c version-mini.o wkb-hook.dll
+
+custom-ui.o: custom-ui.rc Makefile.gcc32
+	$(RC32) -o $@ custom-ui.rc
+
+custom-ui.dll: empty-dll-main.c custom-ui.o Makefile.gcc32
+	$(CC32) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ empty-dll-main.c custom-ui.o
 
 clean:
-	@"./make-clean.cmd"
+	$(RM) *.o *.exe *.dll
 
 .PHONY: all clean
