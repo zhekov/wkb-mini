@@ -1,3 +1,6 @@
+Discontinued. Use https://github.com/zhekov/wkb-micro instead.
+
+
 WKB Layout Switcher (wkb-mini) README file
 **Please** spare a minute to read p.1 to 3
 
