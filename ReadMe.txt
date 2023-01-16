@@ -45,28 +45,32 @@ is restarted or all users log (sign) off, and it'll complete the job.
 
 5. Compilation.
 
-To compile WKB, you will need the GNU make, gcc 32-bit, and gcc 64-bit for
-the 64-bit version. Use the supplied Makefile-s to build WKB, correcting the
-tool names if needed, for example:
+To compile WKB, you will need:
 
-C:\...> mingw32-make.exe -f Makefile.gcc32 GCC32=path/to/executable/gcc.exe
+- GNU make
+- gcc 32-bit
+- gcc 64-bit
+- Nullsoft Install System (NSIS) version 2.46 or later, 32-bit
+- NSIS nsArray and Tooltips plugins
 
-To create the installation package, you will need the Nullsoft Install
-System (NSIS) version 2.46 or later, with the nsArray and Tooltips plugins.
-After building WKB, compile settings.nsi, and then either install-32.nsi or
-install-64.nsi.
+First, compile the C code, correcting the tool names if needed. For example:
 
-The compilation is not a trivial process, so if you have problems, please
+C:\source\wkb-mini>mingw32-make.exe GCC32=C:\msys64\mingw32\bin\gcc.exe
+
+Next, use NSIS to compile compile settings.nsi and install.nsi, in this
+order.
+
+Compiling software is not a trivial process, so if you have problems, please
 consult with a specialist.
 
 
 6. Compatibility.
 
-Requires Windows 2000 or later.
-Tested with Windows XP, 7 and 10.
-Tested with Metro (Modern) applications.
+Requires 64-bit Windows 7 or later.
+Tested with Windows 7 SP1 and Windows 10 1903.
+Tested with universal (Metro/Modern) applications.
 Tested with virtual machines. See the notes below.
-Tested with Windows 10 and Sysinternals virtual desktops.
+Tested with Sysinternals and Windows 10 virtual desktops.
 Not tested with NVidia virtual desktops, they seem obsolete.
 Not tested with Windows Vista, 8, and server operating systems.
 
@@ -93,11 +97,14 @@ be conflicting. Disable one of them.
 1.09: Option to unload the wrong lock/unlock, Ctrl-Alt-Del etc. layouts.
 1.10: Added Caps Lock and Print Screen to the list of toggle/shift keys.
 1.11: Simpler unload, display unload error message on the starting desktop.
+1.12: More installer metadata, "License" button and "Show ReadMe" option.
+1.14: Require Vista or later 64-bit, better UAC and silent install support.
+1.15: Handle error 1452 when unloading the wrong lock/unlock etc. layouts.
 
 
 9. Legal information.
 
-WKB Layout version 1.11, Copyright (C) 2016-2020 Dimitar Toshkov Zhekov.
+WKB Layout version 1.15, Copyright (C) 2016-2022 Dimitar Toshkov Zhekov.
 Report bugs to <dimitar.zhekov@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it
@@ -114,6 +121,5 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc., 51
 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-The gucharmap icon is part of the GNOME icon theme, designed by the GNOME
-icon artists, and licensed under the Creative Commons Attribution-Share
-Alike 3.0 Unported license.
+The gucharmap icon is based on (and almost identical to) gucharmap.svg,
+created August 2007 by Andreas Nilsson, under GPL.

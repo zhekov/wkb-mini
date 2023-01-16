@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+  Copyright (C) 2016-2022 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by the Free
@@ -16,44 +16,21 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <stdio.h>
-#include <string.h>
-#define STRICT
-#include <windows.h>
+static const char *const PROGRAM_NAME = "wkb-mwow";
+#include "program-inc.c"
 
 #define WKB_MINI_DLL __declspec(dllimport)
 #include "wkb-hook.h"
 
-static int timerDelay = 0;
-
 #include "wkb-mwow.h"
 
-static void fatal(const char *s)
-{
-	MessageBox(NULL, s, "wkb-mwow", MB_OK | MB_ICONERROR);
-	ExitProcess(1);
-}
-
-static void checkFunc(const char *func, BOOL cond)
-{
-	if (!cond)
-	{
-		char s[0x100];
-
-		snprintf(s, sizeof s, "%s failed with error code %lu.", func, (unsigned long) GetLastError());
-		fatal(s);
-	}
-}
-
 static HWND wkbWindow;
-static const char *const WKB_CLASS_NAME = WOW_CLASS_NAME;
-static const char *const WKB_WINDOW_NAME = WOW_WINDOW_NAME;
 static HHOOK hWindowProc, hKeyboardProc;
 static HINSTANCE hInstance, hLibrary;
 
 static void connectLock(void)
 {
-	wkbWindow = CreateWindow(WKB_CLASS_NAME, WKB_WINDOW_NAME, WS_OVERLAPPED, 1, 1, 1, 1, NULL, NULL, hInstance, NULL);
+	wkbWindow = CreateWindow(WOW_CLASS_NAME, WOW_WINDOW_NAME, WS_OVERLAPPED, 1, 1, 1, 1, NULL, NULL, hInstance, NULL);
 	checkFunc("CreateWindow", wkbWindow != NULL);
 	ShowWindow(wkbWindow, SW_HIDE);
 	hWindowProc = SetWindowsHookEx(WH_CALLWNDPROC, windowProc, hLibrary, 0);
@@ -70,6 +47,8 @@ static void disconnectHooks(void)
 	checkFunc("UnhookWindowsHookEx(hKeyboardProc)", UnhookWindowsHookEx(hKeyboardProc));
 }
 
+static int timerDelay = 0;
+
 #include "wkb-proc-inc.c"
 
 static int wowMain(void)
@@ -80,7 +59,7 @@ static int wowMain(void)
 
 	wkbClass.lpfnWndProc = wkbWindowProc;
 	wkbClass.hInstance = hInstance;
-	wkbClass.lpszClassName = WKB_CLASS_NAME;
+	wkbClass.lpszClassName = WOW_CLASS_NAME;
 	checkFunc("RegisterClass", RegisterClass(&wkbClass) != (ATOM) 0);
 
 	hLibrary = GetModuleHandle("wkb-hk32.dll");
@@ -106,7 +85,7 @@ int CALLBACK WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpC
 	(void) nCmdShow;
 
 	if (__argc != 2 || strcmp(__argv[1], WOW_ARGUMENT))
-		fatal("This program should be started internally by wkb-mini.exe\n\nUsage: wkb-mwow " WOW_ARGUMENT);
+		fatal("This program should be started internally by wkb-mini.exe");
 
 	hInstance = hThisInstance;
 	return wowMain();

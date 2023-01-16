@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+  Copyright (C) 2016-2022 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by the Free
@@ -16,20 +16,16 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+static const char *const PROGRAM_NAME = "wkb-mini";
+#include "program-inc.c"
+
 #include <ctype.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#define STRICT
-#include <windows.h>
 #include <tlhelp32.h>
 
 #define WKB_MINI_DLL __declspec(dllimport)
 #include "wkb-hook.h"
 
-#ifdef _WIN64
 #include "wkb-mwow.h"
-#endif
 
 static inline BOOL keyPressed(BYTE key) { return (GetAsyncKeyState(key) & 0x8000) != 0; }
 static inline BOOL winKeyPressed(void) { return keyPressed(VK_LWIN) || keyPressed(VK_RWIN); }
@@ -227,30 +223,6 @@ static LRESULT CALLBACK keyboardLLProc(INT nCode, WPARAM wParam, LPARAM lParam)
 	return CallNextHookEx(0, nCode, wParam, lParam);
 }
 
-#ifdef __GNUC__
-static void fatal(const char *format, ...) __attribute__ ((format(printf, 1, 2), noreturn));
-#endif
-static void fatal(const char *format, ...)
-{
-	va_list ap;
-	char s[0x100];
-
-	va_start(ap, format);
-	vsnprintf(s, sizeof s, format, ap);
-	va_end(ap);
-
-	if (MessageBox(NULL, s, "wkb-mini", MB_OK | MB_ICONERROR) == 0)
-		MessageBeep(MB_ICONERROR);
-
-	ExitProcess(1);
-}
-
-static inline void checkFunc(const char *func, BOOL cond)
-{
-	if (!cond)
-		fatal("%s failed with error code %lu.", func, (unsigned long) GetLastError());
-}
-
 static HWND wkbWindow;
 static const char *const WKB_CLASS_NAME = "wkbMini83447E6D";
 static const char *const WKB_WINDOW_NAME = "WkbMini45B95DF9";
@@ -283,7 +255,6 @@ static void disconnectHooks(void)
 
 #include "wkb-proc-inc.c"
 
-#ifdef _WIN64
 static void startWowHelper(void)
 {
 	STARTUPINFO startupInfo = { 0 };
@@ -295,7 +266,6 @@ static void startWowHelper(void)
 	CloseHandle(processInfo.hThread);
 	CloseHandle(processInfo.hProcess);
 }
-#endif
 
 static BOOL CALLBACK compareHWnd(HWND hwnd, LPARAM lParam)
 {
@@ -332,17 +302,15 @@ static void getConsoleThread(HWND focus)
 	}
 }
 
-static BOOL regOpenUserKey(const char *name, PHKEY phKey, const char *where)
+static LONG regOpenUserKey(const char *name, PHKEY phKey, const LONG *allowedResults)
 {
 	LONG result = RegOpenKeyEx(HKEY_CURRENT_USER, name, 0, KEY_QUERY_VALUE, phKey);
 
-	if (result == ERROR_SUCCESS)
-		return TRUE;
+	for (int i = 0; allowedResults[i] != result; i++)
+		if (allowedResults[i] == ERROR_SUCCESS)
+			fatal("RegOpenKeyEx(%s) failed with error code %ld.", name, (long) result);
 
-	if (result != ERROR_FILE_NOT_FOUND)
-		fatal("RegOpenKeyEx(%s) failed with error code %ld.", where, (long) result);
-
-	return FALSE;
+	return result;
 }
 
 enum { REG_BUFFER_SIZE = 11 };
@@ -370,11 +338,14 @@ static BOOL regReadString(HKEY hKey, const char *name, char *buffer, const char 
 
 static BOOL fixLayouts = FALSE;
 
-static void unloadWrongLayouts(void)
+static BOOL unloadWrongLayouts(void)
 {
+	static const char *const PRELOAD_KEY = "Keyboard Layout\\Preload";
+	static const LONG allowedResults[] = { ERROR_FILE_NOT_FOUND, ERROR_PAGED_SYSTEM_RESOURCES, ERROR_SUCCESS };
 	HKEY hKey;
+	LONG result = regOpenUserKey(PRELOAD_KEY, &hKey, allowedResults);
 
-	if (regOpenUserKey("Keyboard Layout\\Preload", &hKey, "Preload"))
+	if (result == ERROR_SUCCESS)
 	{
 		enum { MAX_LAYOUTS = 64 };
 		DWORD nUserLayouts;
@@ -389,13 +360,13 @@ static void unloadWrongLayouts(void)
 
 			itoa(nUserLayouts + 1, name, 10);
 
-			if (!regReadString(hKey, name, buffer, "Preload"))
+			if (!regReadString(hKey, name, buffer, PRELOAD_KEY))
 				break;
 
 			value = strtoul(buffer, &endptr, 0x10);
 
 			if (strlen(buffer) > 8 || value == HKL_PREV || value == HKL_NEXT || *endptr != '\0')
-				fatal("RegQueryValueEx(Preload\\%s): invalid value", name);
+				fatal("RegQueryValueEx(%s\\%s): invalid value", PRELOAD_KEY, name);
 
 			if (nUserLayouts < MAX_LAYOUTS)
 				userLayouts[nUserLayouts] = LOWORD(value);
@@ -417,6 +388,8 @@ static void unloadWrongLayouts(void)
 			}
 		}
 	}
+
+	return result != ERROR_PAGED_SYSTEM_RESOURCES;
 }
 
 static int wkbMainLoop(void)
@@ -430,11 +403,17 @@ static int wkbMainLoop(void)
 		if (standardMainProc(&msg))
 			continue;
 
-		// PLAYBACK is required for keybd_event()
+		// JOURNALPLAYBACK is required for keybd_event()
 		HWND focus = getFocus(DESKTOP_HOOKCONTROL | DESKTOP_JOURNALPLAYBACK | DESKTOP_CREATEWINDOW);
 
 		if (focus != NULL)
 		{
+			if (fixLayouts && lastFocus == NULL && !unloadWrongLayouts())
+			{
+				timerDelay = 5;
+				continue;
+			}
+
 			if (lockScroll)
 			{
 				HKL layout;
@@ -452,9 +431,6 @@ static int wkbMainLoop(void)
 				if (layout != 0 && (GetKeyState(VK_SCROLL) & 0x01) != (layout != defaultLayout))
 					toggleScroll();
 			}
-
-			if (fixLayouts && lastFocus == NULL)
-				unloadWrongLayouts();
 		}
 
 		lastFocus = focus;
@@ -480,9 +456,7 @@ static int wkbMain(void)
 	hLibrary = GetModuleHandle("wkb-hook.dll");
 	connectLock();
 	startTimer();
-#ifdef _WIN64
 	startWowHelper();
-#endif
 	rc = wkbMainLoop();
 	disconnectHooks();
 	clearScroll();
@@ -537,7 +511,7 @@ static const char *const USAGE =
 	"KEY = Apps (Props), Scroll, RCtrl, RAlt, RWin, RShift, LCtrl, LAlt, LWin,\n"
 	"LShift, Pause, Caps, Print or a 2-digit winuser.h VK_ hex value (00 = none).\n"
 	"\n"
-	"Using LWin or RWin as a shift-switch key is NOT recommended\n"
+	"Using LWin or RWin as a shift-switch key is NOT recommended.\n"
 	"\n"
 	"/N - Do not use the Scroll Lock led as a keyboard layout indicator,\n"
 	"/I - Use the Scroll Lock led as an indicator.\n"
@@ -560,7 +534,7 @@ static const char *parseArguments(int argc, char **argv)
 		{
 			case '?' :
 			{
-				MessageBox(NULL, USAGE, "wkb-mini", MB_OK);
+				MessageBox(NULL, USAGE, PROGRAM_NAME, MB_OK);
 				ExitProcess(0);
 			}
 			case 'T' :
@@ -584,32 +558,35 @@ static const char *parseArguments(int argc, char **argv)
 	return NULL;
 }
 
+static const char *const WKB_LAYOUT_KEY = "Software\\WkbLayout";
+
 static unsigned obtainKey(HKEY hKey, const char *name)
 {
 	char buffer[REG_BUFFER_SIZE];
 	unsigned key = VK_APPS;
 
 	if (regReadString(hKey, name, buffer, "WkbLayout") && (key = translateKey(buffer)) == KEY_UNDEF)
-		fatal("RegQueryValueEx(WkbLayout\\%s): invalid value", name);
+		fatal("RegQueryValueEx(%s\\%s): invalid value", WKB_LAYOUT_KEY, name);
 
 	return key;
 }
 
 static void readSettings(void)
 {
+	static const LONG allowedResults[] = { ERROR_FILE_NOT_FOUND, ERROR_SUCCESS };
 	HKEY hKey;
 
-	if (regOpenUserKey("Software\\WkbLayout", &hKey, "WkbLayout"))
+	if (regOpenUserKey(WKB_LAYOUT_KEY, &hKey, allowedResults) == ERROR_SUCCESS)
 	{
 		char buffer[REG_BUFFER_SIZE];
 
 		toggleKey = obtainKey(hKey, "ToggleKey");
 		shiftKey = obtainKey(hKey, "ShiftKey");
 
-		if (regReadString(hKey, "LedLight", buffer, "WkbLayout"))
+		if (regReadString(hKey, "LedLight", buffer, WKB_LAYOUT_KEY))
 			lockScroll = _stricmp(buffer, "No");
 
-		if (regReadString(hKey, "FixLayouts", buffer, "WkbLayout"))
+		if (regReadString(hKey, "FixLayouts", buffer, WKB_LAYOUT_KEY))
 			fixLayouts = !_stricmp(buffer, "Yes");
 
 		RegCloseKey(hKey);
@@ -619,9 +596,7 @@ static void readSettings(void)
 static inline void findWkbWindows(HWND *windows)
 {
 	windows[0] = FindWindow(WKB_CLASS_NAME, WKB_WINDOW_NAME);
-#ifdef _WIN64
 	windows[1] = FindWindow(WOW_CLASS_NAME, WOW_WINDOW_NAME);
-#endif
 }
 
 // EnumWindows and all desktop functions may return FALSE without setting the last

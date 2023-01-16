@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+# Copyright (C) 2016-2022 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
@@ -18,8 +18,8 @@
 
 all: wkb-mini.exe wkb-mwow.exe custom-ui.dll
 
-CC32 = i686-w64-mingw32-gcc
-CC64 = x86_64-w64-mingw32-gcc
+GCC32 = i686-w64-mingw32-gcc
+GCC64 = x86_64-w64-mingw32-gcc
 CFLAGS = -Wall -Wextra -O2
 LDFLAGS = -s -mwindows
 DLLFLAGS = -shared -nostdlib -nostartfiles
@@ -27,29 +27,29 @@ RC32 = windres -F pe-i386
 RC64 = windres -F pe-x86-64
 RM = rm -f
 
-wkb-hook.dll: wkb-hook.c wkb-hook.h Makefile.gcc64
-	$(CC64) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ wkb-hook.c -luser32
+wkb-hook.dll: wkb-hook.c wkb-hook.h Makefile
+	$(GCC64) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ wkb-hook.c -luser32
 
-version-mini.o: version-mini.rc Makefile.gcc64
+version-mini.o: version-mini.rc gucharmap1.ico Makefile
 	$(RC64) -o $@ version-mini.rc
 
-wkb-mini.exe: wkb-mini.c wkb-proc-inc.c wkb-hook.h version-mini.o wkb-mwow.h wkb-hook.dll Makefile.gcc64
-	$(CC64) $(CFLAGS) $(LDFLAGS) -o $@ wkb-mini.c version-mini.o wkb-hook.dll
+wkb-mini.exe: wkb-mini.c wkb-mwow.h wkb-proc-inc.c program-inc.c version-mini.o wkb-hook.dll Makefile
+	$(GCC64) $(CFLAGS) $(LDFLAGS) -o $@ wkb-mini.c version-mini.o wkb-hook.dll
 
-wkb-hk32.dll: wkb-hook.c wkb-hook.h Makefile.gcc64
-	$(CC32) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ wkb-hook.c -luser32
+wkb-hk32.dll: wkb-hook.c wkb-hook.h Makefile
+	$(GCC32) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ wkb-hook.c -luser32
 
-version-mwow.o: version-mwow.rc Makefile.gcc64
+version-mwow.o: version-mwow.rc Makefile
 	$(RC32) -o $@ version-mwow.rc
 
-wkb-mwow.exe: wkb-mwow.c wkb-proc-inc.c wkb-hook.h version-mwow.o wkb-mwow.h wkb-hk32.dll Makefile.gcc64
-	$(CC32) $(CFLAGS) $(LDFLAGS) -o $@ wkb-mwow.c version-mwow.o wkb-hk32.dll
+wkb-mwow.exe: wkb-mwow.c wkb-mwow.h wkb-proc-inc.c program-inc.c version-mwow.o wkb-hk32.dll Makefile
+	$(GCC32) $(CFLAGS) $(LDFLAGS) -o $@ wkb-mwow.c version-mwow.o wkb-hk32.dll
 
-custom-ui.o: custom-ui.rc Makefile.gcc64
+custom-ui.o: custom-ui.rc Makefile
 	$(RC32) -o $@ custom-ui.rc
 
-custom-ui.dll: empty-dll-main.c custom-ui.o Makefile.gcc64
-	$(CC32) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ empty-dll-main.c custom-ui.o
+custom-ui.dll: empty-dll-main.c custom-ui.o Makefile
+	$(GCC32) $(CFLAGS) $(LDFLAGS) $(DLLFLAGS) -o $@ empty-dll-main.c custom-ui.o
 
 clean:
 	$(RM) *.o *.exe *.dll

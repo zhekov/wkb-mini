@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+  Copyright (C) 2016-2022 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by the Free
@@ -18,11 +18,11 @@
 
 #include <winver.h>
 
-1 ICON gucharmap.ico
+1 ICON "gucharmap1.ico"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1, 11, 0, 0
-PRODUCTVERSION 1, 11, 0, 0
+FILEVERSION 1, 15, 0, 0
+PRODUCTVERSION 1, 15, 0, 0
 FILEOS VOS_NT_WINDOWS32
 FILETYPE VFT_APP
 BEGIN
@@ -32,11 +32,11 @@ BEGIN
     BEGIN
       VALUE "FileDescription", "WKB Layout Executable\0"
       VALUE "InternalName", "wkb-mini\0"
-      VALUE "FileVersion", "1.11\0"
-      VALUE "LegalCopyright", "Copyright (C) 2016-2020 Dimitar Toshkov Zhekov\0"
+      VALUE "FileVersion", "1.15\0"
+      VALUE "LegalCopyright", "Copyright (C) 2016-2022 Dimitar Toshkov Zhekov\0"
       VALUE "OriginalFilename", "wkb-mini.exe\0"
       VALUE "ProductName", "WKB Layout\0"
-      VALUE "ProductVersion", "1.11\0"
+      VALUE "ProductVersion", "1.15\0"
     END
   END
   BLOCK "VarFileInfo"

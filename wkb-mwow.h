@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016-2020 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
+  Copyright (C) 2016-2022 Dimitar Toshkov Zhekov <dimitar.zhekov@gmail.com>
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU General Public License as published by the Free
@@ -16,6 +16,6 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#define WOW_CLASS_NAME "wkbMini32Hook83447E6D"
-#define WOW_WINDOW_NAME "WkbMini32Hook45B95DF9"
+static const char *const WOW_CLASS_NAME = "wkbMini32Hook83447E6D";
+static const char *const WOW_WINDOW_NAME = "WkbMini32Hook45B95DF9";
 #define WOW_ARGUMENT "/wkb:start"
